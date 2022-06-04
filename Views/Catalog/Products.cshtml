@@ -1,0 +1,26 @@
+﻿@model APS_MVC.Models.Catalog
+
+@{
+    ViewData["Title"] = "Продукты";
+}
+
+<h1>Продукты</h1>
+
+<h4>Каталог продуктов:</h4>
+<div class="table">
+    <table class="table">
+        <thead>
+            <tr><th>ID</th><th>Название</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+            {
+                <tr><td>@product.Id</td><td>@product.Name</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
