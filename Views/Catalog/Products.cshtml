@@ -15,7 +15,10 @@
         <tbody>
             @foreach (var product in Model.Products)
             {
-                <tr><td>@product.Id</td><td>@product.Name</td></tr>
+                @if (product != null)
+                {
+                    <tr><td>@product.Id</td><td>@product.Name</td></tr>
+                }
             }
         </tbody>
     </table>
