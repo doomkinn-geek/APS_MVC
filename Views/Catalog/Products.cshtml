@@ -1,4 +1,4 @@
-﻿@model APS_MVC.Models.Catalog
+﻿@model APS_MVC.Models.SafeCatalog
 
 @{
     ViewData["Title"] = "Продукты";
@@ -13,7 +13,7 @@
             <tr><th>ID</th><th>Название</th></tr>
         </thead>
         <tbody>
-            @foreach (var product in Model.Products)
+            @foreach (var product in Model.Products.GetAll())
             {
                 @if (product != null)
                 {
