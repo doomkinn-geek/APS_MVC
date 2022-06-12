@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace APS_MVC.Controllers
 {
     public class CatalogController : Controller
-    {
-        private static Catalog _catalog = new();
+    {        
+        private static SafeCatalog _catalog = new();
 
         [HttpGet]
         public IActionResult Products()
@@ -17,10 +17,24 @@ namespace APS_MVC.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public IActionResult AddProduct(Product model)
+        public IActionResult RemoveProduct()
         {
-            _catalog.Products.Add(model);
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddProduct(Product product)
+        {
+            if (product != null)
+                _catalog.Products.Add(product);
+            return View(_catalog);
+        }
+        [HttpPost]
+        public IActionResult RemoveProduct(Product product)
+        {
+            if(product != null)
+            {
+                _catalog.Products.Remove(product);
+            }
             return View(_catalog);
         }
     }
