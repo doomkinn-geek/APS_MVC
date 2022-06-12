@@ -5,6 +5,7 @@ namespace APS_MVC.Controllers
 {
     public class CatalogController : Controller
     {
+        private object _syncObj = new();
         private static Catalog _catalog = new();
 
         [HttpGet]
@@ -20,8 +21,11 @@ namespace APS_MVC.Controllers
         [HttpPost]
         public IActionResult AddProduct(Product model)
         {
-            _catalog.Products.Add(model);
-            return View(_catalog);
+            lock (_syncObj)
+            {
+                _catalog.Products.Add(model);
+                return View(_catalog);
+            }
         }
     }
 }
