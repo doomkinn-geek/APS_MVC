@@ -1,7 +1,10 @@
+using APS_MVC.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<INotificationSender, NotificationSender>();
 
 var app = builder.Build();
 
