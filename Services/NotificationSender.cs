@@ -21,8 +21,8 @@ namespace APS_MVC.Services
 			SmtpClient client = new();
 			try
 			{
-				client.Connect("smtp.beget.com", 25, true);
-				client.Authenticate("asp2022gb@rodion-m.ru", "3drtLSa1");
+				client.Connect("https://smtp.beget.com/", 25, true);
+				client.Authenticate("null", "null");
 				client.Send(email);					
 			}
 			catch (Exception ex)
