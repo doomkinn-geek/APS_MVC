@@ -22,7 +22,7 @@ namespace APS_MVC.Services
 			try
 			{
 				client.Connect("https://smtp.beget.com/", 25, true);
-				client.Authenticate("null", "null");
+				client.Authenticate("", "");
 				client.Send(email);					
 			}
 			catch (Exception ex)
