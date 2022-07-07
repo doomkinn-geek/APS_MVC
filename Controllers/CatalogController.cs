@@ -7,7 +7,7 @@ namespace APS_MVC.Controllers
     public class CatalogController : Controller
     {        
         private static SafeCatalog _catalog = new();
-        private static INotificationSender _notification;
+        private static INotificationSender? _notification;
 
         public CatalogController(INotificationSender notification)
         {
