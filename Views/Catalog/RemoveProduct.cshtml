@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+@{
+    ViewData["Title"] = "Удаление продукта";
+}
+
+<h4>Удаление продукта:</h4>
+<hr />
+<div class="form-check">
+    <form asp-action="RemoveProduct">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <form method="post">
+                <div class="row"> Id: <input type="text" name="id" required /></div>
+                <br/>                
+            <input type="submit" value="Удалить" class="btn btn-primary" />
+            <br/>
+            </form>
+        </div>
+    </form>
+</div>
+<hr />
