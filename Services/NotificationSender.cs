@@ -1,6 +1,5 @@
 ﻿using APS_MVC.Models;
-using ASP_MVC;
-using MailKit;
+using ASP_MVC.Configuration;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -10,15 +9,17 @@ namespace APS_MVC.Services
     public class NotificationSender : INotificationSender
     {
 		public SmtpConfig _smtpConfig;
-		public NotificationSender(IOptions<SmtpConfig> options)
+		public SmtpSecurityConfig _smtpSecurityConfig;
+		public NotificationSender(IOptions<SmtpConfig> options, IOptions<SmtpSecurityConfig> smtpSecurityConfig)
         {
-			_smtpConfig = options.Value;
+            _smtpConfig = options.Value;
+            _smtpSecurityConfig = smtpSecurityConfig.Value;
         }
         bool INotificationSender.SendEMail(Product product)
         {
             MimeMessage email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_smtpConfig.FromAddress));
-            email.To.Add(MailboxAddress.Parse(_smtpConfig.UserName));
+            email.To.Add(MailboxAddress.Parse(_smtpSecurityConfig.UserName));
             email.Subject = "Уведомление о добавлении продукта";
             email.Body = new TextPart()
             {
@@ -29,7 +30,7 @@ namespace APS_MVC.Services
 			try
 			{
 				client.Connect(_smtpConfig.Host, _smtpConfig.Port, true);
-				client.Authenticate(_smtpConfig.UserName, _smtpConfig.Password);
+				client.Authenticate(_smtpSecurityConfig.UserName, _smtpSecurityConfig.Password);
 				client.Send(email);					
 			}
 			catch (Exception ex)
