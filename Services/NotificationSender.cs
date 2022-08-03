@@ -3,6 +3,7 @@ using ASP_MVC.Configuration;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using Serilog;
 
 namespace APS_MVC.Services
 {
@@ -17,6 +18,7 @@ namespace APS_MVC.Services
         }
         bool INotificationSender.SendEMail(Product product)
         {
+			Log.Information("Отправляем уведомление о добавлении продукта на e-mail");
             MimeMessage email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(_smtpConfig.FromAddress));
             email.To.Add(MailboxAddress.Parse(_smtpSecurityConfig.UserName));
@@ -35,7 +37,7 @@ namespace APS_MVC.Services
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				Log.Error(ex.Message);				
 				return false;
 			}
 			finally

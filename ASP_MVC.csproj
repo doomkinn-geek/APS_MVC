@@ -9,7 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="MailKit" Version="3.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0-preview.6.22324.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.5" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
   </ItemGroup>
 
 </Project>
