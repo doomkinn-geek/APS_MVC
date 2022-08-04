@@ -29,12 +29,13 @@ namespace APS_MVC.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult AddProduct(Product product)
+        public async Task<IActionResult> AddProduct(Product product)
         {
             if (product != null)
             {
                 _catalog.Products.Add(product);
-                Task.Run(() => _notification.SendEMail(product));
+                //Task.Run(() => _notification.SendEMail(product));
+                await _notification.SendEmailAsync(product);
             }
             return View(_catalog);
         }
