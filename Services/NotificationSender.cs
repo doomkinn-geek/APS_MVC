@@ -7,25 +7,26 @@ using Serilog;
 
 namespace APS_MVC.Services
 {
-    public class NotificationSender : INotificationSender
+    public class NotificationSender : INotificationSender, IAsyncDisposable
     {
 		public SmtpConfig _smtpConfig;
 		public SmtpSecurityConfig _smtpSecurityConfig;
-		public NotificationSender(IOptions<SmtpConfig> options, IOptions<SmtpSecurityConfig> smtpSecurityConfig)
+        public SmtpClient _smtpClient;
+        public NotificationSender(IOptions<SmtpConfig> options, IOptions<SmtpSecurityConfig> smtpSecurityConfig)
         {
             _smtpConfig = options.Value;
             _smtpSecurityConfig = smtpSecurityConfig.Value;
+            _smtpClient = new();
         }
         bool INotificationSender.SendEMail(Product product)
         {
             var emailMessage = MakeMessage(product);
-            Log.Information("Отправляем уведомление о добавлении продукта на e-mail");
-			SmtpClient client = new();
+            Log.Information("Отправляем уведомление о добавлении продукта на e-mail");			
 			try
 			{
-				client.Connect(_smtpConfig.Host, _smtpConfig.Port, true);
-				client.Authenticate(_smtpSecurityConfig.UserName, _smtpSecurityConfig.Password);
-				client.Send(emailMessage);					
+                _smtpClient.Connect(_smtpConfig.Host, _smtpConfig.Port, true);
+                _smtpClient.Authenticate(_smtpSecurityConfig.UserName, _smtpSecurityConfig.Password);
+                _smtpClient.Send(emailMessage);					
 			}
 			catch (Exception ex)
 			{
@@ -34,25 +35,22 @@ namespace APS_MVC.Services
 			}
 			finally
 			{
-				client.Disconnect(true);
-				client.Dispose();
+                _smtpClient.Disconnect(true);
+                _smtpClient.Dispose();
 			}
 			return true;
         }
 
-		async Task INotificationSender.SendEmailAsync(Product product)
+		async Task INotificationSender.SendEmailAsync(Product product, CancellationToken cancellationToken)
         {
             var emailMessage = MakeMessage(product);
             Log.Information("Асинхронно отправляем уведомление о добавлении продукта на e-mail");
             try
             {
-                using (var client = new SmtpClient())
-                {
-                    await client.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, false);
-                    await client.AuthenticateAsync(_smtpSecurityConfig.UserName, _smtpSecurityConfig.Password);
-                    await client.SendAsync(emailMessage);
-                    await client.DisconnectAsync(true);
-                }
+                await _smtpClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, false, cancellationToken);
+                await _smtpClient.AuthenticateAsync(_smtpSecurityConfig.UserName, _smtpSecurityConfig.Password, cancellationToken);
+                await _smtpClient.SendAsync(emailMessage, cancellationToken);
+                //await client.DisconnectAsync(true);                
             }
             catch (Exception ex)
             {
@@ -71,6 +69,15 @@ namespace APS_MVC.Services
                 Text = $"Продукт {product.Id}:{product.Name} добавлен!"
             };
             return email;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_smtpClient.IsConnected)
+            {
+                await _smtpClient.DisconnectAsync(true);
+            }
+            _smtpClient.Dispose();
         }
     }
 }
