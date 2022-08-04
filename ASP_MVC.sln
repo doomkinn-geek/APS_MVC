@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APS_MVC", "APS_MVC.csproj", "{66CE05EC-80D6-44A2-8A89-612701BC0C4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASP_MVC", "ASP_MVC.csproj", "{66CE05EC-80D6-44A2-8A89-612701BC0C4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

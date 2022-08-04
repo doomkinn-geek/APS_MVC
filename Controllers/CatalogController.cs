@@ -1,11 +1,18 @@
 ﻿using APS_MVC.Models;
+using APS_MVC.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APS_MVC.Controllers
 {
     public class CatalogController : Controller
-    {
-        private static Catalog _catalog = new();
+    {        
+        private static SafeCatalog _catalog = new();
+        private static INotificationSender _notification;
+
+        public CatalogController(INotificationSender notification)
+        {
+            _notification = notification;
+        }
 
         [HttpGet]
         public IActionResult Products()
@@ -17,10 +24,27 @@ namespace APS_MVC.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public IActionResult AddProduct(Product model)
+        public IActionResult RemoveProduct()
         {
-            _catalog.Products.Add(model);
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddProduct(Product product, CancellationToken cancellationToken)
+        {
+            if (product != null)
+            {
+                _catalog.Products.Add(product);                
+                await _notification.SendEmailAsync(product, cancellationToken);
+            }
+            return View(_catalog);
+        }
+        [HttpPost]
+        public IActionResult RemoveProduct(Product product)
+        {
+            if(product != null)
+            {
+                _catalog.Products.Remove(product);
+            }
             return View(_catalog);
         }
     }
